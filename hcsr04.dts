@@ -1,0 +1,70 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+  compatible = "ti,beaglebone", "ti,beaglebone-black";
+
+  /* identification */
+  part-number = "hcsr04";
+  version = "00A0";
+
+  exclusive-use =
+    "P8_12", "P8_11","P8_16","P8_15","P8_21","P8_20","P8_13","P8_14","P9_21","P9_22","P9_26","P9_24"
+   ;
+
+  fragment@0 {
+    target = <&am33xx_pinmux>;
+    __overlay__ {
+    pinctrl_hcsr04: pinctrl_hcsr04_pins {
+        pinctrl-single,pins = <
+					/*
+						Table of mux options:
+						Bit 0 \
+						Bit 1 |- Mode
+						Bit 2 /
+						Bit 3: 1 - Pull disabled, 0 - Pull enabled
+						
+						Bit 4: 1 - Pull up, 0 - Pull down
+						Bit 5: 1 - Input, 0 – Output
+					*/
+					0x030 0x07 /* P8_12 gpio1[12] GPIO44 out pulldown Mode: 7 */
+					0x034 0x27 /* P8_11 gpio1[13] GPIO45 in pulldown Mode: 7 */
+					0x038 0x07 /* P8_16 gpio1[14] GPIO46 output pull down, Mode:7 */
+					0x03c 0x27 /* P8_15 gpio1[15] GPIO47 output pull down, Mode:7 */
+
+					0x080 0x027 /* P8_21 gpio1[30] GPIO62 output pull down, Mode:7 */
+					0x084 0x07/* P8_14 gpio0[31] GPIO63 output pull down, Mode:7 */
+
+					0x024 0x27  /* P8_13 gpio0[23] in pulldown, Mode:7 */
+					0x028 0x07  /* P8_14 gpio0[26] out pulldown, Mode:7 */
+					0x154 0x27  /* P9_21 gpio0[3]  in pulldown Mode: 7 */
+					0x150 0x07  /* P9_22 gpio0[2]  out pulldown Mode:7 */
+					0x180 0x27  /* P9_26 gpio0[14]  in pulldown Mode: 7 */
+					0x184 0x07  /* P9_24 gpio0[15]  out pulldown Mode:7 */
+
+					
+
+          >;
+      };
+    };
+  };
+
+  fragment@1 {
+    target = <&ocp>;
+    __overlay__ {
+      test_helper: helper {
+        compatible = "bone-pinmux-helper";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_hcsr04>;
+        status = "okay";
+      };
+    };
+  };
+
+  fragment@2{
+  target = <&pruss>;
+    __overlay__ {
+      status = "okay";
+    };
+  };
+};

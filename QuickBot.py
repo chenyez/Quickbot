@@ -112,37 +112,8 @@ class QuickBot:
         
         GPIO.cleanup()
         PWM.cleanup()
-    # get IR sensor values in analog voltage
-    def get_IR_volts(self):
-        ir_volts = np.zeros(len(self.irPinList))
-#	n = 20 
-	ir_v=[[] for i in range(5)]
-     
-#        for x in range(n):
-        for i,p in enumerate(self.irPinList):   
-	    ir_volts[i]=ADC.read(p)*1.8
-            ir_v[i].append(round(ir_volts[i],2))
-#           time.sleep(0.01)
-#	for i,p in enumerate(self.irPinList):   ##
-#        	ir_volts[i] = ADC.read(p)
-#        time.sleep(0.01)
 
-#	print 'ir_v=',ir_v
-	ir_volts_mode=[]
-	ir_temp=[]
-	for k in range(5):
-		ir_temp=mode(ir_v[k])
-		ir_volts_mode.append(ir_temp[0][0])
-#	print 'ir_volts_mode=',ir_volts_mode
-	return ir_volts_mode
-#        return ir_volts*1.8/n
-    # get IR sensor distances in centimeters cm
-    def get_IR_distances(self):
-        ir_volts = self.get_IR_volts();
-#	print ir_volts
-        ir_dists = np.polyval(self.coeffs, ir_volts) #each coeffs*ir_volts
-#	print ir_dists
-        return ir_dists
+
     # get robot heading x axis w.r.t north, degrees
 
     def get_heading(self):
@@ -219,6 +190,12 @@ class QuickBot:
 		
 	return wf_u
 '''
+
+
+
+
+
+
 quik=QuickBot(config.LEFT_MOTOR_PINS,config.RIGHT_MOTOR_PINS, config.IR_PINS)
 #ir_d=quik.get_IR_distances()
 #ir_sum=0
