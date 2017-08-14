@@ -114,11 +114,9 @@ class ControlFunctions:
 
 
 
-
-
-controlfunctions=ControlFunctions()
-angle=controlfunctions.ao_heading()
-print 'angle turn is :',angle
-
-controlfunctions.pypruss.stop_pru()
-
+if __name__ == "__main__":
+	controlfunctions=ControlFunctions()
+	angle=controlfunctions.ao_heading()
+	print 'angle turn is :',angle
+	
+	controlfunctions.pypruss.stop_pru()

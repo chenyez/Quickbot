@@ -57,13 +57,9 @@ class Compass:
 		
 
 		
-'''
-
-compass = Compass()
-
-for x in range(20):
-
-	print 'heading', compass.get_heading()
-	print 'corr is',compass.get_corr()
-	time.sleep(1)
-'''
+if __name__ == "__main__":
+	compass = Compass()
+	for x in range(20):
+		print 'heading', compass.get_heading()
+		print 'corr is',compass.get_corr()
+		time.sleep(1)

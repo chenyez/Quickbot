@@ -109,7 +109,7 @@ SAMPLE_ECHO_DELAY:
 	// Echo is complete
 	// Store the microsecond count in the PRU's data ram so C program can read it
 	SBCO roundtrip, c24, 8, 4
-	MOV r31.b0, PRU0_ARM_INTERRUPT+16
+//	MOV r31.b0, PRU0_ARM_INTERRUPT+16
 
 
 
@@ -182,7 +182,7 @@ SAMPLE_ECHO_DELAY2:
 // Second Sensor End
 	SBCO roundtrip, c24, 12, 4
 	// Trigger the PRU0 interrupt (C program gets the event)
-	MOV r31.b0, PRU0_ARM_INTERRUPT+16
+	//MOV r31.b0, PRU0_ARM_INTERRUPT+16
 
 	// Delay to allow sonar to stop resonating and sound burst to decay in environment
 	MOV delay, 3000000
@@ -253,7 +253,7 @@ SAMPLE_ECHO_DELAY3:
 // Third Sensor End
 	SBCO roundtrip, c24, 4, 4
 	// Trigger the PRU0 interrupt (C program gets the event)
-	MOV r31.b0, PRU0_ARM_INTERRUPT+16
+	//MOV r31.b0, PRU0_ARM_INTERRUPT+16
 
 	// Delay to allow sonar to stop resonating and sound burst to decay in environment
 	MOV delay, 3000000
@@ -326,7 +326,7 @@ SAMPLE_ECHO_DELAY4:
 // Forth Sensor End
 	SBCO roundtrip, c24, 0, 4
 	// Trigger the PRU0 interrupt (C program gets the event)
-	MOV r31.b0, PRU0_ARM_INTERRUPT+16
+	//MOV r31.b0, PRU0_ARM_INTERRUPT+16
 
 	// Delay to allow sonar to stop resonating and sound burst to decay in environment
 	MOV delay, 3000000

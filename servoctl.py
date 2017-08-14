@@ -9,8 +9,8 @@ class Servo():
 
 	def __init__(self):
 	
-		PWM.start(servor, 100, 50)
-		PWM.start(servol, 100, 50)
+		PWM.start(servor, 0,500)
+		PWM.start(servol, 0,500)
 
 	def set_pwm(self, pwml, pwmr):
 
@@ -30,13 +30,49 @@ class Servo():
 
 		PWM.set_duty_cycle(servor,100-abs(pwmr))
 		PWM.set_duty_cycle(servol,100-abs(pwml))
+
+
+#		PWM.set_duty_cycle(servor,pwmr)
+#		PWM.set_duty_cycle(servol,pwml)
+
+if __name__ == "__main__":
+
+	servo=Servo()
+	print 'Test1'
+
+	servo.set_pwm(1,60)
+	time.sleep(2)
+
+	print 'Test2'
+	servo.set_pwm(0,0)
+	time.sleep(2)
+
+	servo.set_pwm(1,60)
+	time.sleep(2)
+
+	servo.set_pwm(0,0)
+	time.sleep(2)
+
+	print 'Test3'
+
+	servo.set_pwm(1,60)
+	time.sleep(2)
+
+	servo.set_pwm(0,0)
+	time.sleep(1)
+
+	print 'Test4'
+
+	servo.set_pwm(1,60)
+	time.sleep(2)
+	print 'change speed'
+
+	servo.set_pwm(0,0)
+
 '''
-servo=Servo()
-servo.set_pwm(10,10)
-time.sleep(3)
-servo.set_pwm(70,50)
-time.sleep(3)
-servo.set_pwm(100,100)
-time.sleep(3)
-servo.set_pwm(0,0)
+left: 15>10
+
+right: 28<30
+
+left&right: 10>28, 15>30, 10>29,70<50,70<35
 '''

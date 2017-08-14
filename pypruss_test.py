@@ -30,9 +30,10 @@ class PyprussTest():
 		distances=[]
 
 		pypruss.wait_for_event(0)                                   # Wait for event 0 which is connected to PRU0_ARM_INTERRUPT
+		time.sleep(0.2)
+		
 		pypruss.clear_event(0,pypruss.PRU0_ARM_INTERRUPT)           # Clear the event
 		
-		time.sleep(0.2)
 
 		for j in range(5):
 			distances.append(round(float(struct.unpack('L', self.pruData[offset+j*4:offset+(j+1)*4])[0]/58.44),2))
@@ -45,10 +46,10 @@ class PyprussTest():
 		return 0
 
 		
-'''
-pyprusstest=PyprussTest()
+if __name__ == "__main__":
+	pyprusstest=PyprussTest()
 
-i=pyprusstest.get_distances()
-print i
-j=pyprusstest.stop_pru()
-'''
+	i=pyprusstest.get_distances()
+	print i
+	j=pyprusstest.stop_pru()
+

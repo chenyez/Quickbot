@@ -1,27 +1,37 @@
-from QuickBot import *
-from enum import Enum
+from Control_functions import *
+from servoctl import *
+#from enum import Enum
+from Compass_HMC5883L import Compass
+#from pypurss_test import *
 
+'''
 class NavState(Enum):
 	GO_TO_GOAL=0
 	PRE_WALL_FOLLOW=1
 	WALL_FOLLOW=2
 	HALT=3
 #	AVOID_OBSTACLES=4
-
+'''
 class Navigation:
 
 	def __init__(self):
-		self.q_b = QuickBot(config.LEFT_MOTOR_PINS,config.RIGHT_MOTOR_PINS, config.IR_PINS)
-	#	self.qb = QuickBot(config.LEFT_MOTOR_PINS,config.RIGHT_MOTOR_PINS, config.IR_PINS)
+		self.control_func= ControlFunctions()
 		self.navState='GO_TO_GOAL'
 		self.currentHeading=0
 		self.Headingerror=0
-		self.goalHeading=90
-		self.ir_dist=[0.0,0.0,0.0,0.0,0.0]
+
+		self.goalHeading=270
+
+		self.hc_dist=[]
+		self.servo=Servo()
+		self.compass=Compass()
+		self.pypruss =  self.control_func.pypruss
+		self.wf_heading=0
+
 
 	def go_to_goal(self,angle):
 	#	print 'gtg function start'
-		currentHeading=self.q_b.get_heading()
+		currentHeading=self.compass.get_heading()
 		print 'currentHeading is', currentHeading
 
 		Headingerror=currentHeading-angle
@@ -34,56 +44,80 @@ class Navigation:
 
 		error_P=Headingerror
 		kp=0.3
-	#	print 'pwm l=',60+ kp*error_P, ' pwm r=', 60-kp*error_P
-		self.q_b.set_pwm(np.clip(30+kp*error_P,-60,60),np.clip(30-kp*error_P,60,60))
+		self.servo.set_pwm(np.clip(30+kp*error_P,-100,100),np.clip(30-kp*error_P,100,100))
+#		self.servo.set_pwm(10,70)
+
 	#	self.q_b.set_pwm(40+kp*error_P,40-kp*error_P)
-	#	print 'gtg function end'
-		print 'ir_dists=', self.q_b.get_IR_distances()
+		print 'hc_dists=', self.pypruss.get_distances()
 	
 	def wf_heading(self):
 		return self.q_b.ao_heading()
 	def stop(self):
 		self.q_b.stop()
 	def run(self):
-		ir_dist=self.q_b.get_IR_distances()
-		currentHeading=self.q_b.get_heading()
-		if np.amin(self.q_b.get_heading())<10:
-			print 'ir_dist=',self.q_b.get_heading()
-			self.q_b.stop()
+#		hc_dist=self.pypruss.get_distances()
 
+		currentHeading=self.compass.get_heading()
 		
 		if self.navState=='GO_TO_GOAL':
-	#		self.q_b.set_pwm(0,0)
 
-			print 'seconde ir_dists=', self.q_b.get_IR_distances()
-			ir_dis=self.q_b.get_IR_distances()
-			if ir_dis[1]<10 or ir_dis[2]<10 or ir_dis[3]<10:
-				print 'final ir_dists=', self.q_b.get_IR_distances()
+
+			hc_dist=self.pypruss.get_distances()
+			print 'hc_dists=',hc_dist
+			hc_dis=[hc_dist[0],hc_dist[1],hc_dist[3],hc_dist[4]]
+			if np.amin(hc_dis)<20 or hc_dist[2]<6:
+#				print 'hc_ditss=', self.pypruss.get_distances()
 				
-				self.q_b.stop
+				self.servo.set_pwm(0,0)
 
 				print 'Current state is: ',self.navState
-				self.navState='PRE_WALL_FOLLOW'
+#				self.navState='WALL_FOLLOW'
+				self.navState='GOAL_TO_GOAL'
+				
 			else:
-				self.q_b.set_pwm(0,0)
+			#	time.sleep(0.2)
+				self.servo.set_pwm(10,28)
 				self.go_to_goal(self.goalHeading)
+				self.navState='GO_TO_GOAL'
+
 
 			return
+
 		elif self.navState=='PRE_WALL_FOLLOW':
-			self.q_b.set_pwm(0,0)
-			
-			print 'compare ir_dists=', self.q_b.get_IR_distances()
-			print 'current heading=', self.q_b.get_heading()
+			self.servo.set_pwm(0,0)
+			self.wf_heading=self.control_func.ao_heading()
+
+
+			print 'compare hc_dists=', self.pypruss.get_distances()
+			print 'current heading=', self.compass.get_heading(),'wf_heading=',self.wf_heading
 
 		#	if len(wf_u)!=0:	
 			print 'Current state is: ',self.navState			
-			self.navState='PRE_WALL_FOLLOW'
-			
+			self.navState='WALL_FOLLOW'
+	
+
+		
 			return
+
+
 		elif self.navState=='WALL_FOLLOW':
+			self.servo.set_pwm(0,0)
+			self.wf_heading=self.control_func.ao_heading()
+
+
+			print 'compare hc_dists=', self.pypruss.get_distances()
+			print 'current heading=', self.compass.get_heading(),'wf_heading=',self.wf_heading
+
+		#	if len(wf_u)!=0:	
+			print 'Current state is: ',self.navState	
+
+
 			self.q_b.set_pwm(0,0)
 
-			#self.go_to_goal(ob_angle)
+			self.go_to_goal(self.wf_heading)
+			self.navState='WALL_FOLLOW'
+			return			
+'''
 			wf_u=[]
 			ob_angle=0.0
 			#print 'Current state is: ',self.navState
@@ -103,7 +137,15 @@ class Navigation:
 			print 'ir_dist=',self.q_b.get_IR_distances()
 			print 'wf_u=', wf_u
 			self.q_b.set_pwm(0,0)
+'''
+navi=Navigation()
+i=0
+while i<20:
 
-		
+	navi.run()
+	i=i+1
+
+navi.control_func.pypruss.stop_pru()
+	
 	
 	
