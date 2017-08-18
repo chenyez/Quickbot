@@ -35,19 +35,40 @@ class Servo():
 #		PWM.set_duty_cycle(servor,pwmr)
 #		PWM.set_duty_cycle(servol,pwml)
 
+
+	def angle_turns(self,angle):
+		print 'begin turning'
+		if angle>90:
+			num_ninety=(180-angle)/90.0
+			self.set_pwm(0,30)
+			time.sleep(0.6*num_ninety)
+			self.set_pwm(0,0)
+			print 'end turning'
+		else:
+			num_ninety=angle/90.0
+			self.set_pwm(0.1,0)
+			time.sleep(0.6*num_ninety)
+			self.set_pwm(0,0)
+			print 'end turning'
+		return
+
+		
+
 if __name__ == "__main__":
+
+
 
 	servo=Servo()
 	print 'Test1'
 
-	servo.set_pwm(1,60)
+	servo.set_pwm(10,30)
 	time.sleep(2)
 
 	print 'Test2'
 	servo.set_pwm(0,0)
 	time.sleep(2)
 
-	servo.set_pwm(1,60)
+	servo.set_pwm(0.1,30)
 	time.sleep(2)
 
 	servo.set_pwm(0,0)
@@ -55,22 +76,22 @@ if __name__ == "__main__":
 
 	print 'Test3'
 
-	servo.set_pwm(1,60)
+	servo.set_pwm(0.1,30)
 	time.sleep(2)
 
 	servo.set_pwm(0,0)
 	time.sleep(1)
 
-	print 'Test4'
-
-	servo.set_pwm(1,60)
-	time.sleep(2)
-	print 'change speed'
 
 	servo.set_pwm(0,0)
 
+
 '''
 left: 15>10
+
+left 90 degree: set_pwm(0,30) 0.6sec
+right 90 degree: set_pwm(0.1,0) for 0.6 sec 
+
 
 right: 28<30
 

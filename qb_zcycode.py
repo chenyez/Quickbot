@@ -44,8 +44,8 @@ class Navigation:
 
 		error_P=Headingerror
 		kp=0.3
-		self.servo.set_pwm(np.clip(30+kp*error_P,-100,100),np.clip(30-kp*error_P,100,100))
-#		self.servo.set_pwm(10,70)
+#		self.servo.set_pwm(np.clip(30+kp*error_P,-100,100),np.clip(30-kp*error_P,100,100))
+		self.servo.set_pwm(0.1,30)
 
 	#	self.q_b.set_pwm(40+kp*error_P,40-kp*error_P)
 		print 'hc_dists=', self.pypruss.get_distances()
@@ -64,19 +64,34 @@ class Navigation:
 
 			hc_dist=self.pypruss.get_distances()
 			print 'hc_dists=',hc_dist
-			hc_dis=[hc_dist[0],hc_dist[1],hc_dist[3],hc_dist[4]]
-			if np.amin(hc_dis)<20 or hc_dist[2]<6:
-#				print 'hc_ditss=', self.pypruss.get_distances()
+#			hc_dis=[hc_dist[0],hc_dist[1],hc_dist[3],hc_dist[4]]
+
+			ob_detect=[]
+			for i in range(5):
+				if hc_dist[i]<30:
+					ob_detect.append(i)
+
+#			if np.amin(hc_dist)<20: #or hc_dist[2]<7:
+#				print 'hc_ditss=', hc_dist
+
+			if len(ob_detect)>1:
 				
 				self.servo.set_pwm(0,0)
-
+				
 				print 'Current state is: ',self.navState
+				wf_turn = self.control_func.ao_heading(hc_dist,ob_detect)
+				print "wf_turn is :", wf_turn
+				
+				time.sleep(1)
+				
+				self.servo.angle_turns(wf_turn)
 #				self.navState='WALL_FOLLOW'
 				self.navState='GOAL_TO_GOAL'
+				print 'current state is:', self.navState
 				
 			else:
 			#	time.sleep(0.2)
-				self.servo.set_pwm(10,28)
+				self.servo.set_pwm(0.1,30)
 				self.go_to_goal(self.goalHeading)
 				self.navState='GO_TO_GOAL'
 
@@ -85,15 +100,23 @@ class Navigation:
 
 		elif self.navState=='PRE_WALL_FOLLOW':
 			self.servo.set_pwm(0,0)
-			self.wf_heading=self.control_func.ao_heading()
+
+			wf_heading=self.control_func.ao_heading(hc_dist)
+			print 'wall follow direction: ',wf_heading
+
+			if wf_heading==1:
+				self.servo.set_pwm(0.1,30)
+				self.navState='GO_TO_GOAL'
+				return
+
+			
 
 
-			print 'compare hc_dists=', self.pypruss.get_distances()
 			print 'current heading=', self.compass.get_heading(),'wf_heading=',self.wf_heading
 
 		#	if len(wf_u)!=0:	
 			print 'Current state is: ',self.navState			
-			self.navState='WALL_FOLLOW'
+			self.navState='PRE_WALL_FOLLOW'
 	
 
 		

@@ -26,7 +26,7 @@ class ControlFunctions:
         
         print 'Initializing QuickBot - Running directly on the BeagleBone'
         
-        self.hc_dist=[]
+#        self.hc_dist=[]
         self.compass = Compass()
 	self.servo = Servo()
 	self.pypruss =  PyprussTest()
@@ -55,7 +55,7 @@ class ControlFunctions:
 	return np.rad2deg(math.acos(self.dotproduct(v1, v2) / (self.length(v1) * self.length(v2))))
 
 	
-    def ao_heading(self):
+    def ao_heading(self,hc_dist,ob_detect):
 	
 	
 	robot_heading=self.get_heading()
@@ -64,47 +64,43 @@ class ControlFunctions:
 
 
 
-	print 'robot_headings is:',robot_heading
-	
-	
-
-	self.hc_dist=self.get_distances()
-	print 'hc_dists=',self.hc_dist
+	print 'robot_heading is:',robot_heading
 
 
 
 				
-	ob_detect=[]
+#	ob_detect=[]
 	
 	ob_angle=0.0
-	for i in range(5):
-		if self.hc_dist[i]<20:
-			ob_detect.append(i)
-	print 'ob_detect', ob_detect
+#	for i in range(5):
+#		if hc_dist[i]<20:
+#			ob_detect.append(i)
+#	print 'ob_detect', ob_detect
 
 	angle_turn=1
 
-	if len(ob_detect)!=0:
-		if len(ob_detect)==1:
-			print 'only one'
-		else:
+#	if len(ob_detect)!=0:
+#		if len(ob_detect)==1:
+#			print 'only one'
+#			return 1
+#		if len(ob_detect==2):
 
 
-			ob1_x=np.multiply(self.hc_dist[ob_detect[0]],math.cos(ob_detect[0]*math.pi/4))
-			ob1_y=np.multiply(self.hc_dist[ob_detect[0]],math.sin(ob_detect[0]*math.pi/4))
+	ob1_x=np.multiply(hc_dist[ob_detect[0]],math.cos(ob_detect[0]*math.pi/4))
+	ob1_y=np.multiply(hc_dist[ob_detect[0]],math.sin(ob_detect[0]*math.pi/4))
 
-			ob2_x=np.multiply(self.hc_dist[ob_detect[1]],math.cos(ob_detect[1]*math.pi/4))
-			ob2_y=np.multiply(self.hc_dist[ob_detect[1]],math.sin(ob_detect[1]*math.pi/4))
+	ob2_x=np.multiply(hc_dist[ob_detect[1]],math.cos(ob_detect[1]*math.pi/4))
+	ob2_y=np.multiply(hc_dist[ob_detect[1]],math.sin(ob_detect[1]*math.pi/4))
 
-			ob1_corr=[ob1_x,ob1_y]
-			ob2_corr=[ob2_x,ob2_y]
+	ob1_corr=[ob1_x,ob1_y]
+	ob2_corr=[ob2_x,ob2_y]
 
-			ob_heading=np.subtract(ob2_corr,ob1_corr)
+	ob_heading=np.subtract(ob2_corr,ob1_corr)
 
-			print 'ob_heading is: ',ob_heading
-			rb_heading=[0,1]
+	print 'ob_heading is: ',ob_heading
+	rb_heading=[0,1]
 		
-			angle_turn=self.angle(ob_heading,rb_heading)
+	angle_turn=self.angle(ob_heading,rb_heading)
 
 
 
