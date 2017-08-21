@@ -59,26 +59,17 @@ class ControlFunctions:
 	
 	
 	robot_heading=self.get_heading()
-
- 
-
-
-
 	print 'robot_heading is:',robot_heading
-
-
-
 				
-#	ob_detect=[]
 	
 	ob_angle=0.0
+	angle_turn=1
+
+#	ob_detect=[]
 #	for i in range(5):
 #		if hc_dist[i]<20:
 #			ob_detect.append(i)
 #	print 'ob_detect', ob_detect
-
-	angle_turn=1
-
 #	if len(ob_detect)!=0:
 #		if len(ob_detect)==1:
 #			print 'only one'
@@ -95,15 +86,12 @@ class ControlFunctions:
 	ob1_corr=[ob1_x,ob1_y]
 	ob2_corr=[ob2_x,ob2_y]
 
-	ob_heading=np.subtract(ob2_corr,ob1_corr)
+	ob_heading=np.subtract(ob1_corr,ob2_corr)
 
 	print 'ob_heading is: ',ob_heading
 	rb_heading=[0,1]
 		
 	angle_turn=self.angle(ob_heading,rb_heading)
-
-
-
 	return angle_turn
 
 
